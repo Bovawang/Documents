@@ -21,5 +21,29 @@ ASP.NET5 附带三个不同的服务器:
 
 ASP.Net 5不直接监听请求,而是依赖于HTTP服务器实现表面请求应用程序作为一组*feature interfaces*,组成一个HttpContext.IIS 和 WebListener都只支持Windows;Kerstrel用来跨平台运行.你可以在<code>project.json</code>中配置特殊的commands使应用程序寄宿在以上任何一个web服务器上.你甚至可以为应用程序指定一个应用程序入口点,并运行它作为一个可执行文件(使用<code>dnx run</code>)而不是托管在一个单独的进程.
 使用VisualStudio 2015开发ASP.NET应用,默认寄宿在IIS/IIS Express.在<code>projcect.json</code>中"Microsoft.AspNet.Server.IIS"作为依赖项被包含,即使是空网站模板.VS支持多种配置,如IIS Express和<code>project.json</code>中定义的<code>commands</code>.你可以在项目属性中Debug下,管理这些配置设置.
+
+![](https://public.readthedocs.com/aspnet-aspnet/en/latest/_images/serverdemo-properties.png)
 > Note  
-> IIS不支持commands,Visual Studio启动IIS Express并且把应用程序加载到你选择的配置对应的Web Server中.
+> IIS不支持commands,Visual Studio启动IIS  
+
+Express并且把应用程序加载到你选择的配置对应的Web Server中.
+已经为简单的项目支持不同的服务选项在project.json文件中：
+<pre>
+{
+  "webroot": "wwwroot",
+  "version": "1.0.0-*",
+
+  "dependencies": {
+    "Microsoft.AspNet.Server.IIS": "1.0.0-beta6",
+    "Microsoft.AspNet.Server.WebListener": "1.0.0-beta6",
+    "Kestrel": "1.0.0-beta6"
+  },
+
+  "commands": {
+    "kestrel": "Microsoft.AspNet.Hosting --server Kestrel --server.urls http://localhost:5004",
+    "run": "run server.urls=http://localhost:5003",
+    "web": "Microsoft.AspNet.Hosting --server Microsoft.AspNet.Server.WebListener --server.urls http://localhost:5000"
+  },
+
+  "frameworks": {
+</pre>

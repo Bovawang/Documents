@@ -1,6 +1,6 @@
 # Request Features
 ### In this article:
-* <a href="#feature-interfaces">Feature interfaces</a>
+* [Feature interfaces](#feature-interfaces)
 * [Feature collections](#)
 * [Middleware and request features](#)
 
