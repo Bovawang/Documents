@@ -20,6 +20,5 @@
 	* [Semantic Model]()
 * [Working with a Workspace]()
 	* [Workspace]()
-	* [Solutions, Projects and Documents]()
 
 ## <a href="introduction"></a>
