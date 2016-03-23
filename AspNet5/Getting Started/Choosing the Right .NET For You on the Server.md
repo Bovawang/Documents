@@ -1,5 +1,5 @@
 # Choosing the Right .NET For You on the Server
-ASP.NET 5是基于 *[.NET Execution Environment(DNX)](https://public.readthedocs.com/aspnet-aspnet/en/latest/dnx/overview.html)*,它支持跨平台,可以运行在Windows,Mac和Linux.当你选择一个使用一个DNX时,也可以选择不同的运行时：.NET Framework(CLR), *[.NET Core(CoreCLR)](https://public.readthedocs.com/aspnet-aspnet/en/latest/conceptual-overview/dotnetcore.html)* or [Mono](http://mono-project.com/).要选择哪个?让我们看看他们的有点和缺点.
+ASP.NET 5是基于 *[.NET Execution Environment(DNX)](https://public.readthedocs.com/aspnet-aspnet/en/latest/dnx/overview.html)*,它支持跨平台,可以运行在Windows,Mac和Linux.当你选择使用一个DNX时,也可以选择不同的运行时：.NET Framework(CLR), *[.NET Core(CoreCLR)](https://public.readthedocs.com/aspnet-aspnet/en/latest/conceptual-overview/dotnetcore.html)* or [Mono](http://mono-project.com/).要选择哪个?让我们看看他们的有点和缺点.
 
 ## .NET Framework
 .NET Framework是最熟悉的,而且是三个中最稳定的.是windows下稳定包含全部功能的框架. .NET Framework生态系统是容易建立的,发布到现在已超过十年.NET Framework为今天的生产做好准备，提供了兼容性的最高水平为现有的应用程序和库.
