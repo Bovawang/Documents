@@ -48,3 +48,67 @@ public void Configure(IApplicationBuilder app, IHostingEnvironment env, ILoggerF
 你可以学习所有关于middleware并且使用`IApplicationBuilder`去定义你自己的请求pipeline在[Middleware](http://docs.asp.net/en/latest/fundamentals/middleware.html)章节.
 
 ### The ConfigureServices method
+你的Startup类可以包括一个ConfigureServices方法,此方法用于配置应用程序所要使用的服务.ConfigureServices方法在Startup类中使用public修饰,使用IServiceCollection接口作为参数,可以选择返回IServiceProvider类型.ConfigureServices方法在Configure方法之前调用是非常重要的,因为一些功能如:ASP.NET MVC需要在被接入到请求pipeline之前添加某些服务.
+
+正如Configure,它推荐那些需要在ConfigureServices内部大量设置的功能,都作为IServiceCollection的扩展方法封装起来.在下面的例子中你可以看到一些Add[Something]扩展方法,它们用来配置应用来使用:Entity Framework,Identity和MVC:
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    // Add framework services.
+    services.AddEntityFramework()
+        .AddSqlServer()
+        .AddDbContext<ApplicationDbContext>(options =>
+            options.UseSqlServer(Configuration["Data:DefaultConnection:ConnectionString"]));
+
+    services.AddIdentity<ApplicationUser, IdentityRole>()
+        .AddEntityFrameworkStores<ApplicationDbContext>()
+        .AddDefaultTokenProviders();
+
+    services.AddMvc();
+
+    // Add application services.
+    services.AddTransient<IEmailSender, AuthMessageSender>();
+    services.AddTransient<ISmsSender, AuthMessageSender>();
+}
+```
+
+在你的应用通过dependency injection向服务容器中添加服务,使它们可用.正如Startup类能够指定依赖它的方法需要作为参数,而不是硬编码到一个特定的实现,所以你的middleware MVC控制器和其他类也可以这样做.
+
+ConfigureServices方法也是添加配置选项类的地方,例如,你在应用中想让Appsetting可用.更多关于配置选项可以参考[Configuration](http://docs.asp.net/en/latest/fundamentals/configuration.html).
+
+### Services Available in Startup
+ASP.NET 5 在应用启动期间提供一些应用服务和对象.你可以在Startup类的构造函数或COnfigure方法或ConfigureServices方法里包括适当的接口作为参数来启用某个特定的服务.这些服务在Startup类包含的一下方法中都是可用的.提供的框架服务和对象包括:
+**IApplicationBuilder**
+
+    * 用于构建应用请求pipeline.只在Startup类中的Configure方法中可用.了解更多[Request Features](http://docs.asp.net/en/latest/fundamentals/request-features.html)
+
+**IApplicationEnvironment**
+
+    * 提供访问应用的属性,如ApplicationName,ApplicationVersion,ApplicationBasePath
+    * 在Startup的构造方法和Configure方法中可用
+
+    
+**IHostingEnvironment**
+
+    * 提供当前EnvironmentName,WebRootPath和web root file provider
+    * 在Startup的构造方法和Configure方法中可用
+
+**ILoggerFactory**
+
+    * 用于创建日志
+    * 在Startup的构造方法和Configure方法中可用 了解更多[Logging](http://docs.asp.net/en/latest/fundamentals/logging.html)
+
+**IServiceCollection**
+
+    * 容器中已经配置的服务集合
+    * ConfigureServices方法中可用,并且使用该方法来配置可用于应用程序的服务
+
+按照被调用的顺序来看Startup类的每个方法,以下的服务可以作为参数请求:
+Startup Constructor - `IApplicationEnvironment` - `IHostingEnvironment` - `ILoggerFactory`
+
+ConfigureServices - `IServiceCollection`
+
+Configure - `IApplicationBuilder` - `IApplicationEnvironment` - `IHostingEnvironment` - `ILoggerFactory`
+
+>Although ILoggerFactory is available in the constructor, it is typically configured in the Configure method. Learn more about Logging.
+
