@@ -35,8 +35,12 @@ OnDisconnected处理程序在SignalR连接结束后执行.一个SignalR连接可
 当没有连接问题出现时, 并且用户应用调用Stop方法结束SignalR连接, SignalR连接和传输连接开始和结束大约在同一时间.以下部分描述更详细的其他场景:
 
 ###### Transport断开连接场景
-物理连接可能会减缓或连通性受到干扰. 根据长度等因素的干扰, Transport connection可能会丢失. SignalR然后试图重新建立传输连接. 有时传输连接API检测到干扰并且放弃传输连接, SignalR会马上发现连接丢失了. 在其他场景里, 无论是传输连接API还是SignalR都会立即意识到连接已经丢失. 对于除了long polling以外所有的传输方法, SignalR客户机使用一个名为keepalive检查损失的函数连接传输API是否丢失连接. 关于长轮询连接的信息, 请看本篇文章的[Timeout and keepalive settings](http://www.asp.net/signalr/overview/guide-to-the-api/handling-connection-lifetime-events#timeoutkeepalive)话题.
+物理连接可能会减缓或连通性受到干扰. 根据长度等因素的干扰, Transport connection可能会丢失. SignalR然后试图重新建立传输连接. 有时传输连接API检测到中断并且放弃传输连接, SignalR会马上发现连接丢失了. 在其他场景里, 无论是传输连接API还是SignalR都会立即意识到连接已经丢失. 对于除了long polling以外所有的传输方法, SignalR客户机使用一个名为keepalive检查损失的函数连接传输API是否丢失连接. 关于长轮询连接的信息, 请看本篇文章的[Timeout and keepalive settings](http://www.asp.net/signalr/overview/guide-to-the-api/handling-connection-lifetime-events#timeoutkeepalive)话题.
 
-当一个连接是不活跃的,服务器定期的向客户端发送一个keepalive包.截至日期写这篇文章时,默认频率是每10秒.  通过侦听这些包,客户端指出是否有连接问题.如果预期没有收到keepalive报文, 过一段时间后客户端认为连接出现问题,如连接缓慢或干扰.如果较长时间后keepalive仍没有收到, 客户端假设连接已经被中断, 并且开始试着重新连接.
+当一个连接是不活跃的,服务器定期的向客户端发送一个keepalive包.截至日期写这篇文章时,默认频率是每10秒.  通过侦听这些包,客户端指出是否有连接问题.如果预期没有收到keepalive报文, 过一段时间后客户端认为连接出现问题,如连接缓慢或中断.如果较长时间后keepalive仍没有收到, 客户端假设连接已经被中断, 并且开始试着重新连接.
 
 下面的图表说明了客户端和服务器事件在一个典型的场景当物理连接有问题,不是立刻认识到由传输API.图适用于下列情形:
+* 传输方法是WebSockets,forever frame,或者server-sent events
+* 物理网络连接有不同中断期间
+* 传输API没有察觉中断,所以SignalR依赖保持活动来检测他们
+![](..\img\transportdisconnections.png)
